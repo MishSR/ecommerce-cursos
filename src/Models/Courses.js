@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const taskSchema = new mongoose.Schema({
+const courseSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -11,30 +11,26 @@ const taskSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    status: {
-        type: String,
+    price: {
+        type: Number,
         required: true,
-        enum: ["pending", "in progress", "completed"],
-        default: "pending",
+        min: 0,
     },
-    dueDate: {
-        type: Date,
-    },
-    owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+    duration: {
+        type: Number,
         required: true,
+        min: 0,
     },
-    project : {
+    instructor: {
         type: string,
         required: true,
         trim: true,
-    }
+    },
 }, {
     timestamps: true,   
 
 });
 
-const Task = mongoose.model("Task", taskSchema);
+const Course = mongoose.model("Course", courseSchema);
 
-export default Task;
+export default Course;

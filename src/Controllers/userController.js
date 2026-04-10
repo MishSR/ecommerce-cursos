@@ -1,0 +1,77 @@
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../Models/User.js";
+
+const generatePassword = async (password) => {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
+};
+
+const getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find().select("-password");
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getUserById = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const user = await User.findById(id).select("-password");
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const createUser = async (req, res, next) => {
+    try {
+        const {name, email, password} = req.body;
+        const hashedPassword = await generatePassword(password);
+        const newUser = await User.create({name, email, password: hashedPassword});
+        const userResponse = newUser.toObject();
+        delete userResponse.password;
+        res.status(201).json(userResponse);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const updateUser = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const {name, email, password} = req.body;
+        const hashedPassword = await generatePassword(password);
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            {name, email, password: hashedPassword},
+            {new: true,}
+        ).select("-password");
+        if (!updatedUser) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteUser = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const user = await User.findByIdAndDelete(id);
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        res.status(200).json({message: "User deleted successfully"});
+    }   catch (error) {
+        next(error);
+    }
+};
+
+export {getUsers, getUserById, createUser, updateUser, deleteUser};
