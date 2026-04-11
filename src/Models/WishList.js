@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const wishListSchema = new mongoose.Schema({
-    user_id: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
-    products: [{
+    courses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Courses",
+        ref: "Course",
     }],
 }, {
     timestamps: true,

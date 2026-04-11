@@ -51,14 +51,14 @@ const removeFromWishList = async (req, res, next) => {
     try {
         const {id} = req.body;
         const {courseId} = req.params;
-        const wishList = await WishList.findOne{id};    
+        const wishList = await WishList.findOne({user: id})
+            .populate("user")
+            .populate("courses");
         if (!wishList) {
             return res.status(404).json({message: "WishList not found"});
         }
         wishList.courses = wishList.courses.filter(course => course.toString() !== courseId);
         await wishList.save();
-        await wishList.populate("user")
-        await wishList.populate("courses");
         res.status(200).json(wishList);
     } catch (error) {
         next(error);
