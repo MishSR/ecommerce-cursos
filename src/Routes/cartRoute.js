@@ -1,22 +1,25 @@
 import express from "express";
-import  {body, params} from "express-validator";
+import  {body, param} from "express-validator";
 
-import {getCarts,
+import {getCart as getCarts,
   getCartById,
   getCartByUser,
   createCart,
   updateCart,
   deleteCart,} from "../Controllers/cartController.js";
-
-import validate from "../Middleware/validate.js";
-import authMiddleware from "../Middleware/authMiddleware.js";
-import isAdmin from "../Middleware/isAdmin.js";
+import validate from "../Middlewares/validation.js";
+import authMiddleware from "../Middlewares/authMiddleware.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
 
 const router = express.Router();
 
 const userIdValidation =  [param("id")
     .isMongoId()
     .withMessage("User ID must be a valid MongoDB ObjectId"),
+];
+const cartIdValidation = [param("id")
+    .isMongoId()
+    .withMessage("Cart ID must be a valid MongoDB ObjectId"),
 ];
 
 const createCartValidation = [

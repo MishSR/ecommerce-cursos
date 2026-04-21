@@ -1,15 +1,15 @@
 import express from "express"; 
 import {body , param} from "express-validator";
 import {
-    getPayment,
+    getPayments as getPayment,
     getPaymentById,
     createPayment,
     updatePayment,
     deletePayment, 
-} from "../Controllers/paymentCrontoller.js";
+} from "../Controllers/paymentController.js";
 import validate from "../Middlewares/validation.js";
 import authMiddleware from "../Middlewares/authMiddleware.js";
-import isAdmin from "../Middlewares/isAdmin.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
 
 const router = express.Router();
 

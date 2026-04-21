@@ -3,13 +3,13 @@ import { body, param } from "express-validator";
 import {
     getWishList,
     getWishListByUser,
-    addToWishlist,
+    addToWishList as addToWishlist,
     removeFromWishList,
     deleteWishList,
 } from "../Controllers/wishListController.js";
-import validate from "../Middleware/validate.js";
-import isAdmin from "../Middleware/isAdmin.js";
-import authMiddleware from "../Middleware/authMiddleware.js";
+import validate from "../Middlewares/validation.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
+import authMiddleware from "../Middlewares/authMiddleware.js";
 
 const router = express.Router();
 

@@ -1,5 +1,4 @@
 import mongoose  from "mongoose";
-import { act } from "react";
 
 const paymentSchema = new mongoose.Schema({
     user: {
@@ -8,7 +7,7 @@ const paymentSchema = new mongoose.Schema({
         required: true,
     },
     method: {
-        type: string,
+        type: String,
         required: true,
         enum: ["Credit Card", "Debit Card", "Paypal", "Bank Transfer"]
     },

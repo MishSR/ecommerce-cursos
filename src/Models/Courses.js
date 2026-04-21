@@ -22,7 +22,7 @@ const courseSchema = new mongoose.Schema({
         min: 0,
     },
     instructor: {
-        type: string,
+        type: String,
         required: true,
         trim: true,
     },

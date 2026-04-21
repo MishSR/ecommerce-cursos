@@ -1,10 +1,10 @@
 import express from 'express';
-import paymentRoutes from './paymentRoutes.js';
-import userRoutes from './userRoutes.js';
-import coursesRoutes from './coursesRoutes.js';
-import cartRoutes from './cartRoutes.js';
-import wishListRoutes from './wishListRoutes.js';
-import reviewsRoutes from './reviewsRoutes.js';
+import paymentRoutes from './paymentRoute.js';
+import userRoutes from './userRoute.js';
+import coursesRoutes from './coursesRoute.js';
+import cartRoutes from './cartRoute.js';
+import wishListRoutes from './wishListRoute.js';
+import reviewsRoutes from './reviewsRoute.js';
 
  const router = express.Router();
 

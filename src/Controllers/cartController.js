@@ -15,7 +15,7 @@ const getCart = async (req, res, next) => {
 const getCartById  = async (req, res, next) => {
     try {
         const {id} = req.params;
-        const cart = await Cart.findId (id)
+        const cart = await Cart.findById(id)
         .populate("user")
         .populate("courses");
         if (!cart) {
@@ -59,7 +59,7 @@ const createCart = async (req, res, next) => {
         }
 
         const newCart = await Cart.create({user, courses});
-        await createCart.populate("user").populate("courses.course");
+        await newCart.populate("user").populate("courses.course");
         res.status(201).json(newCart);
     }
     catch (error) {
@@ -100,3 +100,17 @@ const updateCart = async (req, res, next) => {
 
     
 };
+const deleteCart = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const deletedCart = await Cart.findByIdAndDelete(id);
+        if (!deletedCart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+        res.status(200).json({ message: "Cart deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export { getCart, getCartById, getCartByUser, createCart, updateCart, deleteCart };

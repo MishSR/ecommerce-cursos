@@ -4,7 +4,7 @@ import {
     getCourses,
     getCourseById,
 } from "../Controllers/coursesController.js";
-import validate from "../Middleware/validate.js";
+import validate from "../Middlewares/validation.js";
 
 const router = express.Router();
 

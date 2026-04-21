@@ -1,9 +1,9 @@
 import express from "express";
-import {boddy, body, param} from "express-validator";
-import { getUserById, getUsers, createUser, updateUser, deleteUser} from "../Controllers/userController";
-import validate from "../Middleware/validate.js";
-import isAdmoin from "../Middleware/isAdmin.js";
-import authMiddleware from "../Middleware/authMiddleware.js";
+import {body, param} from "express-validator";
+import { getUserById, getUsers, createUser, updateUser, deleteUser} from "../Controllers/userController.js";
+import validate from "../Middlewares/validation.js";
+import isAdmoin from "../Middlewares/isAdminMiddleware.js";
+import authMiddleware from "../Middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -17,6 +17,7 @@ const createUserValidation = [
     body("password").isLength({min: 6}).withMessage("Password must be at least 6 characters long"),
     body ("isAdmin").optional().isIn(["customer", "admin"]).withMessage("Role must be either 'customer' or 'admin'")
 ];
+const updateUserValidation = createUserValidation;
 
 router.get("/User", authMiddleware, isAdmoin, getUsers);
 

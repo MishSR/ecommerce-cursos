@@ -5,9 +5,9 @@ import {
     getReviewById,
     createReview,
 } from "../Controllers/reviewsController.js";
-import validate from "../Middleware/validate.js";
-import authMiddleware from "../Middleware/authMiddleware.js";
-import isAdmin from "../Middlewares/isAdminMiddleware";
+import validate from "../Middlewares/validation.js";
+import authMiddleware from "../Middlewares/authMiddleware.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
 
 const router = express.Router();
 

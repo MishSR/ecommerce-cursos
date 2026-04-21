@@ -1,10 +1,10 @@
 import express, { json } from 'express';
 import dotev from 'dotenv';
-import connectDB from './Config/db.config.js';
-import errorHandler from './Middleware/errorHandler.js';
-import logger from './Middleware/logger.js';
+import connectDB from './src/Config/db.config.js';
+import errorHandler from './src/Middlewares/errorHandler.js';
+import logger from './src/Middlewares/logger.js';
 import { connect } from 'mongoose';
-import routes from './Routes/index.js';
+import routes from './src/Routes/index.js';
 
 dotev.config();
 
