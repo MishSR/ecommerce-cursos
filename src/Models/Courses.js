@@ -17,7 +17,7 @@ const courseSchema = new mongoose.Schema({
         min: 0,
     },
     duration: {
-        type: Number,
+        type: String,
         required: true,
         min: 0,
     },
@@ -25,6 +25,11 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+    },
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
 }, {
     timestamps: true,   
