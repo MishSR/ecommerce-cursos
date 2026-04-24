@@ -15,7 +15,7 @@ const getPayments = async (req, res, next) => {
 const getPaymentById = async (req, res, next) => {  
     try {
         const {id} = req.params;
-        const payment = await Payment.findId(id)
+        const payment = await Payment.findById(id)
         .populate("user")
         if (!payment) { 
             return res.status(404).json({message: "Payment method not found"});
