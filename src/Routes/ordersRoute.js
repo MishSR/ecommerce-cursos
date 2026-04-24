@@ -40,7 +40,7 @@ const orderBodyValidation = [
         .withMessage('Invalid status value'),
 ];
 
-router.get('/Order', authMiddleware, getOrders);
+router.get('/Order', authMiddleware,isAdmin, getOrders);
 
 router.get('/Order/:id', authMiddleware, orderIdValidation, validate, getOrderById);
 

@@ -2,7 +2,7 @@ import express from "express";
 import {body, param} from "express-validator";
 import { getUserById, getUsers, createUser, updateUser, deleteUser} from "../Controllers/userController.js";
 import validate from "../Middlewares/validation.js";
-import isAdmoin from "../Middlewares/isAdminMiddleware.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
 import authMiddleware from "../Middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -15,7 +15,7 @@ const createUserValidation = [
     body("name").notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").isLength({min: 6}).withMessage("Password must be at least 6 characters long"),
-    body ("isAdmin").optional().isIn(["customer", "admin"]).withMessage("Role must be either 'customer' or 'admin'")
+    body ("role").optional().isIn(["customer", "admin"]).withMessage("Role must be either 'customer' or 'admin'")
 ];
 const updateUserValidation = createUserValidation;
 
