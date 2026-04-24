@@ -3,8 +3,13 @@ import { body, param } from "express-validator";
 import {
     getCourses,
     getCourseById,
+    createCourse,
+    updateCourse,
+    deleteCourse,
 } from "../Controllers/coursesController.js";
 import validate from "../Middlewares/validation.js";
+import authMiddleware from "../Middlewares/authMiddleware.js";
+import isAdmin from "../Middlewares/isAdminMiddleware.js";
 
 const router = express.Router();
 
@@ -19,15 +24,33 @@ const createCourseValidation = [
         .notEmpty()
         .withMessage("Course title is required"),
     body("description")
-        .optional()
+        .notEmpty()
+        .withMessage("Description is required")
         .isLength({ min: 20, max: 200 })
-        .withMessage("Course description must be between 20 and 200 characters"),
+        .withMessage("Description must be between 20 and 200 characters"),
+    body("price")
+        .notEmpty()
+        .withMessage("Price is required")
+        .isNumeric()
+        .withMessage("Price must be a number"),
+    body("duration")
+        .notEmpty()
+        .withMessage("Duration is required"),
+    body("instructor")
+        .notEmpty()
+        .withMessage("Instructor is required"),
+    body("category")
+        .notEmpty()
+        .withMessage("Category is required")
+        .isMongoId()
+        .withMessage("Category must be a valid MongoDB ObjectId"),
 ];
 
 router.get("/courses", getCourses);
-
 router.get("/courses/:id", courseIdValidation, validate, getCourseById);
-router.post("/courses", createCourseValidation, validate,);
-router.put("/courses/:id", [...courseIdValidation, ...createCourseValidation], validate,);
-router.delete("/courses/:id", courseIdValidation, validate,);
+
+router.post("/courses", authMiddleware, isAdmin, createCourseValidation, validate, createCourse);
+router.put("/courses/:id", authMiddleware, isAdmin, [...courseIdValidation, ...createCourseValidation], validate, updateCourse);
+router.delete("/courses/:id", authMiddleware, isAdmin, courseIdValidation, validate, deleteCourse);
+
 export default router;
