@@ -19,15 +19,15 @@ const createUserValidation = [
 ];
 const updateUserValidation = createUserValidation;
 
-router.get("/User", authMiddleware, isAdmoin, getUsers);
+router.get("/User", authMiddleware, isAdmin, getUsers);
 
-router.get("/User/:id", authMiddleware, isAdmoin, getUserById);
+router.get("/User/:id", authMiddleware, isAdmin, getUserById);
 
-router.post("/User", authMiddleware, isAdmoin, createUserValidation, validate, createUser);
+router.post("/User", authMiddleware, isAdmin, createUserValidation, validate, createUser);
 
-router.put("/User/:id", authMiddleware, isAdmoin, [...userValidation, ...updateUserValidation], validate, updateUser);
+router.put("/User/:id", authMiddleware, isAdmin, [...userValidation, ...updateUserValidation], validate, updateUser);
 
-router.delete("/User/:id", authMiddleware, isAdmoin, userValidation, validate, deleteUser);
+router.delete("/User/:id", authMiddleware, isAdmin, userValidation, validate, deleteUser);
 
 export default router;
 

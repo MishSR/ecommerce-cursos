@@ -46,11 +46,11 @@ const createCourseValidation = [
         .withMessage("Category must be a valid MongoDB ObjectId"),
 ];
 
-router.get("/courses", getCourses);
-router.get("/courses/:id", courseIdValidation, validate, getCourseById);
+router.get("/", getCourses);
+router.get("/:id", courseIdValidation, validate, getCourseById);
 
-router.post("/courses", authMiddleware, isAdmin, createCourseValidation, validate, createCourse);
-router.put("/courses/:id", authMiddleware, isAdmin, [...courseIdValidation, ...createCourseValidation], validate, updateCourse);
-router.delete("/courses/:id", authMiddleware, isAdmin, courseIdValidation, validate, deleteCourse);
+router.post("/", authMiddleware, isAdmin, createCourseValidation, validate, createCourse);
+router.put("/:id", authMiddleware, isAdmin, [...courseIdValidation, ...createCourseValidation], validate, updateCourse);
+router.delete("/:id", authMiddleware, isAdmin, courseIdValidation, validate, deleteCourse);
 
 export default router;

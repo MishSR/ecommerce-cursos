@@ -7,9 +7,11 @@ import wishListRoutes from './wishListRoute.js';
 import reviewsRoutes from './reviewsRoute.js';
 import ordersRoutes from './ordersRoute.js';
 import categoryRoutes from './categoryRoute.js';
+import authRoute from './authRoute.js';
 
 const router = express.Router();
 
+router.use('/auth', authRoute);
 router.use('/users', userRoutes);
 router.use('/courses', coursesRoutes);
 router.use('/orders', ordersRoutes);

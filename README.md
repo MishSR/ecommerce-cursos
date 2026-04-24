@@ -41,17 +41,28 @@ Variables requeridas en `.env`:
 
 ```env
 PORT=3000
-MONGO_URI=mongodb://localhost:27017/ecommerce-cursos
+MONGODB_URI=mongodb://127.0.0.1:27017/ecommerce-cursos
 JWT_SECRET=tu_clave_secreta_aqui
+JWT_REFRESH_SECRET=tu_refresh_secret_aqui
 ```
 
-### 4. Poblar la base de datos (opcional)
+### 4. Iniciar MongoDB (Windows)
+
+Abre una terminal **como administrador** y ejecuta:
+
+```bash
+net start MongoDB
+```
+
+> Si ves "El servicio ya ha sido iniciado", MongoDB ya está corriendo — puedes continuar.
+
+### 5. Poblar la base de datos (opcional)
 
 ```bash
 node src/seed.js
 ```
 
-### 5. Iniciar el servidor
+### 6. Iniciar el servidor
 
 ```bash
 # Desarrollo (con recarga automática)
@@ -62,6 +73,17 @@ npm start
 ```
 
 El servidor corre en `http://localhost:3000`
+
+---
+
+## ⚠️ Errores comunes al iniciar
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `ECONNREFUSED 127.0.0.1:3000` | El servidor no está corriendo | Ejecutar `npm run dev` |
+| `net start MongoDB` — Error sistema 5 | Sin permisos | Abrir terminal como administrador |
+| `ReferenceError: isAdmin is not defined` | Falta import en alguna route | Agregar `import isAdmin from '../Middlewares/isAdminMiddleware.js'` |
+| `%0A` al final de la URL en Postman | Salto de línea invisible en la URL | Hacer clic en la URL y borrar con Backspace al final |
 
 ---
 
@@ -87,7 +109,7 @@ El token se obtiene al hacer login en `POST /api/auth/login`.
 
 | Rol | Descripción |
 |-----|-------------|
-| `customer` | Usuario estándar. Puede gestionar su carrito, wishlist y órdenes. |
+| `customer` | Usuario estándar. Se asigna automáticamente al registrarse. Puede gestionar su carrito, wishlist y órdenes. |
 | `admin` | Acceso completo. Puede gestionar usuarios, cursos, categorías y pagos. |
 
 ---
@@ -103,15 +125,15 @@ El token se obtiene al hacer login en `POST /api/auth/login`.
 
 ### 👤 Usuarios
 
+> ⚠️ Nota: las rutas de usuarios usan `/User` con U mayúscula.
+
 | Método | Ruta | Descripción | Auth |
 |--------|------|-------------|------|
-| GET | `/api/users/User` | Listar usuarios (paginado) | Admin |
+| GET | `/api/users/User` | Listar usuarios | Admin |
 | GET | `/api/users/User/:id` | Obtener usuario por ID | Admin |
 | POST | `/api/users/User` | Crear usuario | Admin |
 | PUT | `/api/users/User/:id` | Actualizar usuario | Admin |
 | DELETE | `/api/users/User/:id` | Eliminar usuario | Admin |
-
-Parámetros de paginación: `?page=1&limit=10`
 
 ### 🗂️ Categorías
 
@@ -125,15 +147,15 @@ Parámetros de paginación: `?page=1&limit=10`
 
 ### 📚 Cursos
 
+> ⚠️ Nota: las rutas de cursos tienen el segmento `/courses` duplicado. Esto es por el prefijo del router + la definición interna de la ruta.
+
 | Método | Ruta | Descripción | Auth |
 |--------|------|-------------|------|
-| GET | `/api/courses/courses` | Listar cursos (paginado) | No |
+| GET | `/api/courses/courses` | Listar cursos | No |
 | GET | `/api/courses/courses/:id` | Obtener curso por ID | No |
 | POST | `/api/courses/courses` | Crear curso | Admin |
 | PUT | `/api/courses/courses/:id` | Actualizar curso | Admin |
 | DELETE | `/api/courses/courses/:id` | Eliminar curso | Admin |
-
-Parámetros de paginación: `?page=1&limit=10`
 
 ### 🛒 Carrito
 
@@ -161,11 +183,11 @@ Parámetros de paginación: `?page=1&limit=10`
 
 | Método | Ruta | Descripción | Auth |
 |--------|------|-------------|------|
-| GET | `/api/payment/payment` | Listar métodos de pago | Admin |
+| GET | `/api/payment/payment` | Listar pagos | Admin |
 | GET | `/api/payment/payment/:id` | Obtener pago por ID | Admin |
-| POST | `/api/payment/payment` | Registrar método de pago | Token |
-| PUT | `/api/payment/payment/:id` | Actualizar método de pago | Admin |
-| DELETE | `/api/payment/payment/:id` | Eliminar método de pago | Admin |
+| POST | `/api/payment/payment` | Registrar pago | Token |
+| PUT | `/api/payment/payment/:id` | Actualizar pago | Admin |
+| DELETE | `/api/payment/payment/:id` | Eliminar pago | Admin |
 
 ### ❤️ Wishlist
 
@@ -189,7 +211,7 @@ Parámetros de paginación: `?page=1&limit=10`
 
 ---
 
-## 📦 Ejemplos de body (Postman)
+## 📦 Ejemplos de body para Postman
 
 ### POST `/api/auth/register`
 ```json
@@ -199,6 +221,19 @@ Parámetros de paginación: `?page=1&limit=10`
   "password": "123456"
 }
 ```
+**Respuesta exitosa (201):**
+```json
+{
+  "name": "Juan Pérez",
+  "email": "juan@ejemplo.com",
+  "role": "customer",
+  "_id": "...",
+  "createdAt": "...",
+  "updatedAt": "..."
+}
+```
+
+---
 
 ### POST `/api/auth/login`
 ```json
@@ -207,7 +242,7 @@ Parámetros de paginación: `?page=1&limit=10`
   "password": "123456"
 }
 ```
-**Respuesta:**
+**Respuesta exitosa (200):**
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -217,6 +252,7 @@ Parámetros de paginación: `?page=1&limit=10`
 ---
 
 ### POST `/api/categories/`
+> Requiere header: `Authorization: Bearer <token_admin>`
 ```json
 {
   "name": "Desarrollo Web",
@@ -235,20 +271,7 @@ Parámetros de paginación: `?page=1&limit=10`
   "price": 299,
   "duration": "6 semanas",
   "instructor": "Ana García",
-  "category": "64f1a2b3c4d5e6f7a8b9c0d1"
-}
-```
-
----
-
-### POST `/api/cart/cart`
-> Requiere header: `Authorization: Bearer <token>`
-```json
-{
-  "user_id": "64f1a2b3c4d5e6f7a8b9c0d2",
-  "items": [
-    { "course_id": "64f1a2b3c4d5e6f7a8b9c0d3", "quantity": 1 }
-  ]
+  "category": "<id_de_categoria>"
 }
 ```
 
@@ -261,9 +284,9 @@ Valores válidos para `status`: `pending`, `processing`, `shipped`, `delivered`,
 
 ```json
 {
-  "user": "64f1a2b3c4d5e6f7a8b9c0d2",
+  "user": "<id_de_usuario>",
   "items": [
-    { "courses": "64f1a2b3c4d5e6f7a8b9c0d3", "quantity": 1 }
+    { "courses": "<id_de_curso>", "quantity": 1 }
   ],
   "total_price": 299,
   "status": "pending"
@@ -279,7 +302,7 @@ Valores válidos para `method`: `Credit Card`, `Debit Card`, `Paypal`, `Bank Tra
 
 ```json
 {
-  "user": "64f1a2b3c4d5e6f7a8b9c0d2",
+  "user": "<id_de_usuario>",
   "method": "Credit Card",
   "cardNumber": "4111111111111111",
   "cardHolder": "Juan Pérez",
@@ -294,15 +317,9 @@ Valores válidos para `method`: `Credit Card`, `Debit Card`, `Paypal`, `Bank Tra
 > Requiere header: `Authorization: Bearer <token>`
 ```json
 {
-  "userId": "64f1a2b3c4d5e6f7a8b9c0d2",
-  "courseId": "64f1a2b3c4d5e6f7a8b9c0d3"
+  "userId": "<id_de_usuario>",
+  "courseId": "<id_de_curso>"
 }
-```
-
-### DELETE `/api/wishlist/wishlist/:id/product/:courseId`
-> No requiere body. Los IDs van en la URL.
-```
-DELETE /api/wishlist/wishlist/64f1a2b3c4d5e6f7a8b9c0d4/product/64f1a2b3c4d5e6f7a8b9c0d3
 ```
 
 ---
@@ -314,23 +331,21 @@ DELETE /api/wishlist/wishlist/64f1a2b3c4d5e6f7a8b9c0d4/product/64f1a2b3c4d5e6f7a
 
 ```json
 {
-  "user_id": "64f1a2b3c4d5e6f7a8b9c0d2",
-  "course_id": "64f1a2b3c4d5e6f7a8b9c0d3",
+  "user_id": "<id_de_usuario>",
+  "course_id": "<id_de_curso>",
   "rating": 5,
   "comment": "Excelente curso, muy bien explicado."
 }
 ```
 
-### PUT `/api/reviews/reviews/:id`
-> Requiere header: `Authorization: Bearer <token_admin>`
+---
 
-Solo se actualizan los campos enviados.
-```json
-{
-  "rating": 4,
-  "comment": "Muy buen curso, aunque podría tener más ejercicios."
-}
-```
+## 💡 Tips para Postman
+
+- Siempre selecciona **Body → raw → JSON** al enviar datos.
+- Asegúrate de que no haya espacios o saltos de línea al final de la URL (causa error `%0A`).
+- Para rutas protegidas ve a **Authorization → Bearer Token** y pega tu token.
+- El token tiene duración de **1 día**. Si expira, vuelve a hacer login.
 
 ---
 

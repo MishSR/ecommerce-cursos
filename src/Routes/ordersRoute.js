@@ -10,6 +10,7 @@ import {
 } from '../Controllers/ordersController.js';
 import validate from '../Middlewares/validation.js';
 import authMiddleware from '../Middlewares/authMiddleware.js';
+import isAdmin from '../Middlewares/isAdminMiddleware.js';
 
 const router = express.Router();
 
@@ -40,7 +41,7 @@ const orderBodyValidation = [
         .withMessage('Invalid status value'),
 ];
 
-router.get('/Order', authMiddleware,isAdmin, getOrders);
+router.get('/Order', authMiddleware, isAdmin, getOrders);
 
 router.get('/Order/:id', authMiddleware, orderIdValidation, validate, getOrderById);
 
