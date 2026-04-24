@@ -17,14 +17,16 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 6,
     },
-}, {
-    timestamps: true,
 
-    role: { 
+ role: { 
         type: String, 
         enum: ["customer", "admin"], 
         default: "customer" 
     },
+}, {
+    timestamps: true,
+
+   
 });
 
 const User = mongoose.model("User", userSchema);

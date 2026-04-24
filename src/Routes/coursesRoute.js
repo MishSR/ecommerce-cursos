@@ -27,11 +27,7 @@ const createCourseValidation = [
 router.get("/courses", getCourses);
 
 router.get("/courses/:id", courseIdValidation, validate, getCourseById);
-
 router.post("/courses", createCourseValidation, validate,);
-
 router.put("/courses/:id", [...courseIdValidation, ...createCourseValidation], validate,);
-
 router.delete("/courses/:id", courseIdValidation, validate,);
-
 export default router;
