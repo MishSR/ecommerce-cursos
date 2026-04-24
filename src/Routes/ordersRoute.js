@@ -14,10 +14,13 @@ import authMiddleware from '../Middlewares/authMiddleware.js';
 const router = express.Router();
 
 const orderIdValidation = [
-    param('id').isMongoId().withMessage('Invalid order ID'),
+    param('id').isMongoId().withMessage('Invalid order ID'), // ✅ mensaje específico de orden
 ];
 
-// El modelo espera items[{courses, quantity}], user, total_price, status
+const userIdValidation = [
+    param('id').isMongoId().withMessage('Invalid user ID'),  // ✅ mensaje específico de usuario
+];
+
 const orderBodyValidation = [
     body('user')
         .notEmpty().withMessage('User is required')
@@ -41,7 +44,7 @@ router.get('/Order', authMiddleware, getOrders);
 
 router.get('/Order/:id', authMiddleware, orderIdValidation, validate, getOrderById);
 
-router.get('/Order/user/:id', authMiddleware, orderIdValidation, validate, getOrdersByUser);
+router.get('/Order/user/:id', authMiddleware, userIdValidation, validate, getOrdersByUser);
 
 router.post('/Order', authMiddleware, orderBodyValidation, validate, createOrder);
 
